@@ -22,22 +22,6 @@ public abstract class AbstractJasmineMojo extends AbstractMojo {
 	protected File jsTestSrcDir;
 	
 	/**
-	 * Comma-separated list of ant-style patterns.
-	 * Only affects inclusion into the SpecRunner. All *.js files in ${jsSrcDir} 
-	 * and ${jsTestSrcDir} will still be copied into ${jasmineTargetDir}.
-	 * @parameter default-value="**\/*.js" expression="${include}"
-	 */
-	protected String include;
-
-	/**
-	 * Comma-separated list of ant-style patterns 
-	 * Only affects inclusion into the SpecRunner. All *.js files in ${jsSrcDir} 
-	 * and ${jsTestSrcDir} will still be copied into ${jasmineTargetDir}.
-	 * @parameter expression="${exclude}"
-	 */
-	protected String exclude;
-
-	/**
 	 * @parameter default-value="js" expression="${packageJavaScriptPath}"
 	 */
 	protected String packageJavaScriptPath;
