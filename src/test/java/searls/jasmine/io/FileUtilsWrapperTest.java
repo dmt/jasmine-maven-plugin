@@ -6,8 +6,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -19,7 +18,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import searls.jasmine.io.FileUtilsWrapper;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(FileUtils.class)
+@PrepareForTest({FileUtils.class, org.codehaus.plexus.util.FileUtils.class})
 public class FileUtilsWrapperTest {
 
 	private FileUtilsWrapper sut = new FileUtilsWrapper();
@@ -28,6 +27,7 @@ public class FileUtilsWrapperTest {
 	@Before
 	public void powerfullyMockStaticClasses() {
 		mockStatic(FileUtils.class);
+		mockStatic(org.codehaus.plexus.util.FileUtils.class);
 	}
 
 	@Test
@@ -49,13 +49,13 @@ public class FileUtilsWrapperTest {
 	}	
 	
 	@Test
-	public void listFilesDelegatesToFileUtils() {
+	public void listFilesDelegatesToPlexusFileUtils() throws IOException {
 		Collection<File> expected = new ArrayList<File>();
-		String[] extensions = new String[] {"js"};
-		boolean recursive = true;
-		when(FileUtils.listFiles(file, extensions, recursive)).thenReturn(expected);
+		String includes="inc";
+		String excludes="exc";
+		when(org.codehaus.plexus.util.FileUtils.getFiles(file, includes, excludes)).thenReturn((List<File>) expected);
 		
-		Collection<File> files = sut.listFiles(file,extensions,recursive);
+		Collection<File> files = sut.listFiles(file, includes, excludes);
 		
 		assertThat(files,is(sameInstance(expected)));
 	}

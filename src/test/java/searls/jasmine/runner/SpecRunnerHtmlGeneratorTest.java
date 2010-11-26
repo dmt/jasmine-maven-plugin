@@ -5,14 +5,15 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import searls.jasmine.io.FileUtilsWrapper;
@@ -21,8 +22,19 @@ import searls.jasmine.runner.SpecRunnerHtmlGenerator.ReporterType;
 @RunWith(MockitoJUnitRunner.class)
 public class SpecRunnerHtmlGeneratorTest {
 
-	@InjectMocks private SpecRunnerHtmlGenerator specRunnerHtmlGenerator = new SpecRunnerHtmlGenerator(null,null,null);
-	@Mock private FileUtilsWrapper fileUtilsWrapper; 
+	private String excludes = "exclude";
+	private String includes = "include";
+	
+	private SpecRunnerHtmlGenerator specRunnerHtmlGenerator;
+	@Mock private FileUtilsWrapper fileUtilsWrapper;
+	@Mock private File sourceDir;
+	@Mock private File destDir; 
+	
+	@Before 
+	public void setUp() {
+		 specRunnerHtmlGenerator = new SpecRunnerHtmlGenerator(null, sourceDir,
+				 includes, excludes, destDir, fileUtilsWrapper);
+	}
 	
 	@Test
 	public void shouldBuildBasicHtmlWhenNoDependenciesAreProvided() {
@@ -67,6 +79,14 @@ public class SpecRunnerHtmlGeneratorTest {
 		String html = specRunnerHtmlGenerator.generate(deps, ReporterType.TrivialReporter);
 		
 		assertThat(html,containsString("<style type=\"text/css\">"+css+"</style>"));
+	}
+	
+	@Test 
+	public void handsIncludeAndExcludeToFileUtils() throws IOException {
+		List<Artifact> deps = new ArrayList<Artifact>();
+		specRunnerHtmlGenerator.generate(deps, ReporterType.TrivialReporter);
+		verify(fileUtilsWrapper).listFiles(sourceDir, includes, excludes);
+		verify(fileUtilsWrapper).listFiles(destDir, includes, excludes);
 	}
 	
 	private Artifact mockDependency(String groupId, String artifactId, String version, String type,String fileContents) throws Exception {
