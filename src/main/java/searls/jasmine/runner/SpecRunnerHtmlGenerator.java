@@ -33,17 +33,29 @@ public class SpecRunnerHtmlGenerator {
 	
 	public enum ReporterType { TrivialReporter, JsApiReporter };
 
-	private FileUtilsWrapper fileUtilsWrapper = new FileUtilsWrapper();
+	private FileUtilsWrapper fileUtilsWrapper;
 	
 	private final File sourceDir;
 	private final File specDir;
 	private List<String> sourcesToLoadFirst;
 	private List<File> fileNamesAlreadyWrittenAsScriptTags = new ArrayList<File>();
+	private final String includes;
+	private final String excludes;
 
-	public SpecRunnerHtmlGenerator(List<String> sourcesToLoadFirst, File sourceDir,File specDir) {
+	public SpecRunnerHtmlGenerator(List<String> sourcesToLoadFirst, File sourceDir,
+			String includes, String excludes, File specDir) {
+		this(sourcesToLoadFirst, sourceDir, includes, excludes, specDir, new FileUtilsWrapper());
+	}
+
+	protected SpecRunnerHtmlGenerator(List<String> sourcesToLoadFirst, File sourceDir,
+			String includes, String excludes, File specDir, 
+			FileUtilsWrapper fileUtilsWrapper) {
 		this.sourcesToLoadFirst = sourcesToLoadFirst;
 		this.sourceDir = sourceDir;
+		this.includes = includes;
+		this.excludes = excludes;
 		this.specDir = specDir;
+		this.fileUtilsWrapper = fileUtilsWrapper;
 	}
 
 	public String generate(List<Artifact> dependencies, ReporterType reporterType) {
@@ -99,7 +111,7 @@ public class SpecRunnerHtmlGenerator {
 		List<File> files = new ArrayList<File>();
 		if(directory != null) {
 			fileUtilsWrapper.forceMkdir(directory);
-			files = new ArrayList<File>(fileUtilsWrapper.listFiles(directory, new String[] {"js"}, true));
+			files = new ArrayList<File>(fileUtilsWrapper.listFiles(directory, includes, excludes));
 			Collections.sort(files); 
 		} 
 		return files;

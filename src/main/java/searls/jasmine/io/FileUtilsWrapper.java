@@ -17,8 +17,8 @@ public class FileUtilsWrapper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<File> listFiles(File file, String[] extensions, boolean recursive) {
-		return FileUtils.listFiles(file, extensions, recursive);
+	public Collection<File> listFiles(File file, String includes, String excludes) throws IOException {
+		return org.codehaus.plexus.util.FileUtils.getFiles(file, includes, excludes);
 	}
 
 	public void writeStringToFile(File file, String data, String encoding) throws IOException {
