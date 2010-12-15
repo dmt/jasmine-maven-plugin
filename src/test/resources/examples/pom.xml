@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>searls</groupId>
+	<artifactId>jasmine-example-superpom</artifactId>
+	<version>1.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>jasmine-maven-plugin Example Projects</name>
+
+	<modules>
+		<module>jasmine-webapp-example</module>
+		<module>jasmine-webapp-custom-dirs</module>
+		<module>jasmine-webapp-empty-example</module>
+		<module>jasmine-webapp-order-matters</module>
+		<module>jasmine-webapp-spec-order-matters</module>
+		<module>jasmine-webapp-custom-runner</module>
+		<module>jasmine-webapp-load-remote</module>
+	</modules>
+
+</project>

@@ -44,8 +44,11 @@ public abstract class AbstractJasmineMojo extends AbstractMojo {
 	
 	/**
 	 * JavaScript sources (typically vendor/lib dependencies) that need to be loaded
-	 * before other sources (and specs) in a particular order, these are relative to the ${jsSrcDir} 
-	 * directory! Therefore, if jquery.js is in `${jsSrcDir}/vendor`, you would configure:
+	 * before other sources (and specs) in a particular order. Each source will first be
+	 * searched for relative to ${jsSrcDir}, then ${jsTestSrcDir}, then (if it's not found in either)
+	 * it will be included exactly as it appears in your POM.
+	 * 
+	 * Therefore, if jquery.js is in `${jsSrcDir}/vendor`, you would configure:
 	 * 
 	 *  	&lt;preloadSources&gt;
 	 *			&lt;source&gt;vendor/z.js&lt;/source&gt;
@@ -56,6 +59,20 @@ public abstract class AbstractJasmineMojo extends AbstractMojo {
 	 * @parameter
 	 */
 	protected List<String> preloadSources;
+	
+	/**
+	 * It may be the case that the jasmine-maven-plugin doesn't currently suit all of your needs,
+	 * 	and as a result the generated SpecRunner HTML files are set up in a way that you can't run
+	 * 	your specs. Have no fear! Simply specify a custom spec runner template in the plugin configuration
+	 * 	and make the changes you need. The default template is stored in `src/main/resources/template/SpecRunner.html`,
+	 * 	and the required template strings are tokenized in "$*$" patterns.
+	 * 
+	 * Example usage:
+	 *  &lt;customRunnerTemplate&gt;${project.basedir}/src/test/resources/myCustomRunner.template&lt;/customRunnerTemplate&gt;
+	 * 
+	 * @parameter
+	 */
+	protected File customRunnerTemplate;
 	
 	/**
 	 * @parameter default-value="${project.build.directory}${file.separator}jasmine"

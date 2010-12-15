@@ -9,13 +9,12 @@ import java.io.IOException;
 import java.util.*;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import searls.jasmine.io.FileUtilsWrapper;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({FileUtils.class, org.codehaus.plexus.util.FileUtils.class})
@@ -69,5 +68,17 @@ public class FileUtilsWrapperTest {
 		
 		verifyStatic();
 		FileUtils.writeStringToFile(file, data,encoding);	
+	}
+	
+	@Test
+	public void copyDirectoryShouldDelegate() throws IOException {
+		File srcDir = mock(File.class);
+		File destDir = mock(File.class);
+		IOFileFilter filter = mock(IOFileFilter.class);
+		
+		sut.copyDirectory(srcDir,destDir,filter);
+		
+		verifyStatic();
+		FileUtils.copyDirectory(srcDir, destDir, filter);
 	}
 }

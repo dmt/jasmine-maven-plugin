@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
 
 public class FileUtilsWrapper {
 
@@ -23,6 +24,10 @@ public class FileUtilsWrapper {
 
 	public void writeStringToFile(File file, String data, String encoding) throws IOException {
 		FileUtils.writeStringToFile(file, data, encoding);
+	}
+
+	public void copyDirectory(File srcDir, File destDir, IOFileFilter filter) throws IOException {
+		FileUtils.copyDirectory(srcDir, destDir, filter);
 	}
 
 }
