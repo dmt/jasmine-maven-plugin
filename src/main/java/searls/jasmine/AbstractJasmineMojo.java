@@ -38,6 +38,17 @@ public abstract class AbstractJasmineMojo extends AbstractMojo {
 	protected String exclude;
 
 	/**
+	 * Determines the browser and version profile to execute the headless specs against. Because the plugin
+	 * 	executes specs using HtmlUnit, this maps 1-to-1 with the public static
+	 * 	instances found in {@link com.gargoylesoftware.htmlunit.BrowserVersion}.
+	 * 	
+	 * 	Some valid examples: FIREFOX_3_6, INTERNET_EXPLORER_6, INTERNET_EXPLORER_7, INTERNET_EXPLORER_8
+	 * 
+	 * @parameter default-value="FIREFOX_3"
+	 */
+	protected String browserVersion;
+	
+	/**
 	 * @parameter default-value="js" expression="${packageJavaScriptPath}"
 	 */
 	protected String packageJavaScriptPath;
@@ -64,7 +75,7 @@ public abstract class AbstractJasmineMojo extends AbstractMojo {
 	 * It may be the case that the jasmine-maven-plugin doesn't currently suit all of your needs,
 	 * 	and as a result the generated SpecRunner HTML files are set up in a way that you can't run
 	 * 	your specs. Have no fear! Simply specify a custom spec runner template in the plugin configuration
-	 * 	and make the changes you need. The default template is stored in `src/main/resources/template/SpecRunner.html`,
+	 * 	and make the changes you need. The default template is stored in `src/main/resources/jasmine-templates/SpecRunner.htmltemplate`,
 	 * 	and the required template strings are tokenized in "$*$" patterns.
 	 * 
 	 * Example usage:
@@ -121,6 +132,11 @@ public abstract class AbstractJasmineMojo extends AbstractMojo {
 	 */
 	protected String srcDirectoryName;
 
+	/**
+	 * @parameter default-value="${project.build.sourceEncoding}"
+	 */
+	protected String sourceEncoding;
+	
 	/**
 	 * @parameter default-value="${project}"
 	 */

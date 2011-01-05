@@ -10,14 +10,17 @@ import java.util.List;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.language.DefaultTemplateLexer;
 import org.apache.maven.artifact.Artifact;
+import org.codehaus.plexus.util.StringUtils;
 
 import searls.jasmine.io.FileUtilsWrapper;
 import searls.jasmine.io.IOUtilsWrapper;
 
 public class SpecRunnerHtmlGenerator {
 
-	public static final String RUNNER_HTML_TEMPLATE_FILE = "/templates/SpecRunner.html";
+	public static final String DEFAULT_RUNNER_HTML_TEMPLATE_FILE = "/jasmine-templates/SpecRunner.htmltemplate";
+	public static final String DEFAULT_SOURCE_ENCODING = "UTF-8";
 
+	private static final String SOURCE_ENCODING = "sourceEncoding";
 	private static final String CSS_DEPENDENCIES_TEMPLATE_ATTR_NAME = "cssDependencies";
 	private static final String JAVASCRIPT_DEPENDENCIES_TEMPLATE_ATTR_NAME = "javascriptDependencies";
 	private static final String SOURCES_TEMPLATE_ATTR_NAME = "sources";
@@ -26,7 +29,8 @@ public class SpecRunnerHtmlGenerator {
 
 	private static final String JAVASCRIPT_TYPE = "js";
 	private static final String CSS_TYPE = "css";
-	
+
+
 	private FileUtilsWrapper fileUtilsWrapper;
 	private IOUtilsWrapper ioUtilsWrapper = new IOUtilsWrapper();
 	private File sourceDir;
@@ -35,20 +39,21 @@ public class SpecRunnerHtmlGenerator {
 	private List<String> fileNamesAlreadyWrittenAsScriptTags = new ArrayList<String>();
 	private final String includes;
 	private final String excludes;
+	private String sourceEncoding;
 
-	public SpecRunnerHtmlGenerator(List<String> sourcesToLoadFirst, File sourceDir,
-			String includes, String excludes, File specDir) {
-		this(sourcesToLoadFirst, sourceDir, includes, excludes, specDir, new FileUtilsWrapper());
+	public SpecRunnerHtmlGenerator(File sourceDir, File specDir, List<String> sourcesToLoadFirst, 
+			String sourceEncoding, String includes, String excludes) {
+		this(sourceDir, specDir, sourcesToLoadFirst, sourceEncoding, includes, excludes, new FileUtilsWrapper());
 	}
 
-	protected SpecRunnerHtmlGenerator(List<String> sourcesToLoadFirst, File sourceDir,
-			String includes, String excludes, File specDir, 
-			FileUtilsWrapper fileUtilsWrapper) {
-		this.sourcesToLoadFirst = sourcesToLoadFirst;
+	protected SpecRunnerHtmlGenerator(File sourceDir, File specDir, List<String> sourcesToLoadFirst, 
+			String sourceEncoding, String includes, String excludes, FileUtilsWrapper fileUtilsWrapper) {
 		this.sourceDir = sourceDir;
+		this.specDir = specDir;
+		this.sourcesToLoadFirst = sourcesToLoadFirst;
+		this.sourceEncoding = sourceEncoding;
 		this.includes = includes;
 		this.excludes = excludes;
-		this.specDir = specDir;
 		this.fileUtilsWrapper = fileUtilsWrapper;
 	}
 
@@ -60,6 +65,7 @@ public class SpecRunnerHtmlGenerator {
 			includeJavaScriptAndCssDependencies(dependencies, template);
 			setJavaScriptSourcesAttribute(template);
 			template.setAttribute(REPORTER_ATTR_NAME, reporterType.name());
+			template.setAttribute(SOURCE_ENCODING, StringUtils.isNotBlank(sourceEncoding) ? sourceEncoding : DEFAULT_SOURCE_ENCODING);
 
 			return template.toString();
 		} catch (IOException e) {
@@ -70,7 +76,7 @@ public class SpecRunnerHtmlGenerator {
 	private String resolveHtmlTemplate(File customRunnerTemplate) throws IOException {
 		return customRunnerTemplate != null ? 
 				fileUtilsWrapper.readFileToString(customRunnerTemplate) 
-				: ioUtilsWrapper.toString(getClass().getResourceAsStream(RUNNER_HTML_TEMPLATE_FILE));
+				: ioUtilsWrapper.toString(getClass().getResourceAsStream(DEFAULT_RUNNER_HTML_TEMPLATE_FILE));
 	}
 
 	private void includeJavaScriptAndCssDependencies(List<Artifact> dependencies, StringTemplate template) throws IOException {

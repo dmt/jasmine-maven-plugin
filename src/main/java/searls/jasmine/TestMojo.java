@@ -26,7 +26,7 @@ public class TestMojo extends AbstractJasmineMojo {
 			JasmineResult result;
 			try {
 				File runnerFile = writeSpecRunnerToOutputDirectory();
-				result = new SpecRunnerExecutor().execute(runnerFile.toURI().toURL(), new File(jasmineTargetDir,junitXmlReportFileName));
+				result = new SpecRunnerExecutor().execute(runnerFile.toURI().toURL(), new File(jasmineTargetDir,junitXmlReportFileName), browserVersion);
 			} catch (Exception e) {
 				throw new MojoExecutionException(e,"There was a problem executing Jasmine specs",e.getMessage());
 			}
@@ -46,7 +46,8 @@ public class TestMojo extends AbstractJasmineMojo {
 	}
 
 	private File writeSpecRunnerToOutputDirectory() throws IOException {
-		SpecRunnerHtmlGenerator htmlGenerator = new SpecRunnerHtmlGenerator(preloadSources,new File(jasmineTargetDir,srcDirectoryName),include, exclude, new File(jasmineTargetDir,specDirectoryName));
+		SpecRunnerHtmlGenerator htmlGenerator = new SpecRunnerHtmlGenerator(new File(jasmineTargetDir,srcDirectoryName),new File(jasmineTargetDir,specDirectoryName),
+				preloadSources, sourceEncoding, include, exclude);
 		String html = htmlGenerator.generate(pluginArtifacts, ReporterType.JsApiReporter, customRunnerTemplate);
 		
 		getLog().debug("Writing out Spec Runner HTML " + html + " to directory " + jasmineTargetDir);
